@@ -1,0 +1,11 @@
+Link para a docs: https://hyperledger-fabric.readthedocs.io/en/release-2.5/index.html
+Repositorio: https://github.com/hyperledger/fabric
+
+Instalacao:
+
+    Prerequistos: https://hyperledger-fabric.readthedocs.io/en/release-2.5/prereqs.html#
+    Instalacao propriamente dita: https://hyperledger-fabric.readthedocs.io/en/release-2.5/install.html
+
+Testando:
+
+    https://hyperledger-fabric.readthedocs.io/en/release-2.5/test_network.html
