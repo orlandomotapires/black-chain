@@ -1,0 +1,8 @@
+Link para a docs: https://hyperledger-fabric.readthedocs.io/en/release-2.5/index.html
+Repositorio: https://github.com/hyperledger/fabric
+
+Logica do hyperledger Fabric:
+    Criar um contrato com suas regras de negocio
+    Subir o contrato criando canais
+    Acessando e alterando dados dentro da rede usando o contrato e assets
+    
