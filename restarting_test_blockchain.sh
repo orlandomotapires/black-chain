@@ -1,4 +1,4 @@
-cd fabric-samples/test-network
+cd ~/fabric-samples/test-network
 
 # Up and down the network
 ./network.sh down
