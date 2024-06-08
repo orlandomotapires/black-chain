@@ -1,0 +1,2 @@
+{"player_name": "alex", "player_age": 21, "player_id": 0, "nft_amount": 12}
+{"player_name": "maria", "player_age": 30, "player_id": 1, "nft_amount": 5}
