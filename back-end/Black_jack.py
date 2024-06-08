@@ -1,6 +1,8 @@
-import random
-import xmlrpc.server
+from flask import Flask, request, jsonify
 from Player import *
+import random
+
+app = Flask(__name__)
 
 class BlackJack:
     def __init__(self):
@@ -43,14 +45,27 @@ class BlackJack:
                 raise ValueError(f"Player with ID {player_id} not found.")
         else:
             self.player = Player.get_player_test()
+
         self.client_hand = []
         self.dealer_hand = self.start_dealer_hand()
 
-    def reset_game(self):
-        self.start_game()
+    def get_message(self, hand_sum):
+        for key in self.messages:
+            if hand_sum in key:
+                return random.choice(self.messages[key])
+        return ""
 
-    def get_dig(self):
-        return self.dig_cards
+    def get_client_hand(self):
+        return self.client_hand
+
+    def client_throw_card(self):
+        random_card = random.choice(self.dig_cards)
+        self.dig_cards.remove(random_card)
+        self.client_hand.append(random_card)
+        return {'client_hand': self.client_hand}
+
+    def stand(self):
+        return self.define_winner()
 
     def start_dealer_hand(self):
         dealer_hand = []
@@ -80,32 +95,18 @@ class BlackJack:
 
         return total
 
-    def get_client_hand(self):
-        return self.client_hand
-    
-    def client_throw_card(self):
-        random_card = random.choice(self.dig_cards)
-        self.dig_cards.remove(random_card)
-        self.client_hand.append(random_card)
-
-    def get_message(self, hand_sum):
-        for key in self.messages:
-            if hand_sum in key:
-                return random.choice(self.messages[key])
-        return ""
-
     def define_winner(self):
         dealer_hand_sum = self.dealer_hand_sum()
         client_hand_sum = self.client_hand_sum()
 
         if dealer_hand_sum > 21 and client_hand_sum <= 21:
-            return 1 # Client Venceu
+            return {"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
         elif dealer_hand_sum <= 21 and (dealer_hand_sum > client_hand_sum or client_hand_sum > 21):
-            return -1 # Dealer Venceu
+            return {"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": self.player.nft_amount - 1}
         elif dealer_hand_sum == client_hand_sum:
-            return 0 # Empate Venceu
+            return {"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": self.player.nft_amount}
         else:
-            return 1 # Client Venceu
+            return {"feed": "Your hand is stronger, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
     
     def get_feed(self):
         feed_string = ""
@@ -131,9 +132,40 @@ class BlackJack:
         player = Player.get_player_by_id(self.player.player_id)
         return f"New amount of NFTs:  {player.nft_amount}"
 
-server = xmlrpc.server.SimpleXMLRPCServer(("localhost", 8000), allow_none=True)
+blackjack = BlackJack()
 
-print("Let the game begin!")
+@app.route("/start_game", methods=["POST"])
+def start_game():
+    data = request.get_json()
+    player_id = data.get("player_id")
+    blackjack.start_game(player_id)
+    return jsonify(success=True)
 
-server.register_instance(BlackJack())
-server.serve_forever()
+@app.route("/client_throw_card", methods=["POST"])
+def client_throw_card():
+    response = blackjack.client_throw_card()
+    return jsonify(response)
+
+@app.route("/stand", methods=["POST"])
+def stand():
+    response = blackjack.stand()
+    return jsonify(response)
+
+@app.route("/get_feed", methods=["GET"])
+def get_feed():
+    response = blackjack.get_feed()
+    return jsonify(feed=response)
+
+@app.route("/get_winner", methods=["GET"])
+def get_winner():
+    response = blackjack.get_winner()
+    return jsonify(winner=response)
+
+@app.route("/show_nft_amount", methods=["GET"])
+def show_nft_amount():
+    response = blackjack.show_nft_amount()
+    return jsonify(nft_amount=response)
+
+if __name__ == "__main__":
+    print("Let the game begin!")
+    app.run(debug=True, port=8000)

@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const serverUrl = "http://localhost:8000";
+    const serverUrl = "http://localhost:5000"; // Alterado para a porta padrão do Flask
     let playerId;
     let player;
-    
+
     const startGameBtn = document.getElementById('start-game-btn');
     const hitBtn = document.getElementById('hit-btn');
     const standBtn = document.getElementById('stand-btn');
@@ -14,57 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const handSumP = document.getElementById('hand-sum');
     const messageP = document.getElementById('message');
     const resultDiv = document.getElementById('result');
-    
-    async function fetchPlayerDetails(id) {
-        try {
-            const response = await fetch(`${serverUrl}/get_player_by_id`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ player_id: id })
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching player details:', error);
-        }
-    }
-    
-    async function startGame(id) {
-        try {
-            const response = await fetch(`${serverUrl}/start_game`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ player_id: id })
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error starting game:', error);
-        }
-    }
-    
-    async function hit() {
-        try {
-            const response = await fetch(`${serverUrl}/client_throw_card`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error hitting:', error);
-        }
-    }
-    
-    async function stand() {
-        try {
-            const response = await fetch(`${serverUrl}/stand`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error standing:', error);
-        }
-    }
-    
+
     startGameBtn.addEventListener('click', async () => {
         playerId = document.getElementById('player-id').value;
         player = await fetchPlayerDetails(playerId);
@@ -77,40 +27,94 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             gameAreaDiv.style.display = 'block';
             playerInfoDiv.style.display = 'none';
-            await startGame(playerId);
+            startGame(playerId);
         } else {
             alert('Player not found');
         }
     });
-    
+
     hitBtn.addEventListener('click', async () => {
         const gameState = await hit();
         updateGameState(gameState);
     });
-    
+
     standBtn.addEventListener('click', async () => {
         const gameState = await stand();
         updateGameState(gameState);
         showResult(gameState);
     });
-    
+
     newGameBtn.addEventListener('click', () => {
         gameAreaDiv.style.display = 'none';
         playerInfoDiv.style.display = 'block';
         resultDiv.innerHTML = '';
     });
-    
-    function updateGameState(gameState) {
-        clientHandDiv.innerHTML = `Your hand: ${gameState.client_hand}`;
-        handSumP.innerHTML = `Your hand sum: ${gameState.client_hand_sum}`;
-        messageP.innerHTML = gameState.message;
+
+    async function fetchPlayerDetails(id) {
+        try {
+            const response = await fetch(`${serverUrl}/get_player_by_id?player_id=${id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching player details:', error);
+        }
     }
-    
-    function showResult(gameState) {
+
+    async function startGame(id) {
+        try {
+            const response = await fetch(`${serverUrl}/start_game`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player_id: id })
+            });
+            const gameState = await response.json();
+            updateGameState(gameState);
+        } catch (error) {
+            console.error('Error starting game:', error);
+        }
+    }
+
+    async function hit() {
+        try {
+            const response = await fetch(`${serverUrl}/client_throw_card`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error hitting:', error);
+        }
+    }
+
+    async function stand() {
+        try {
+            const response = await fetch(`${serverUrl}/stand`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error standing:', error);
+        }
+    }
+
+    function updateGameState(data) {
+        const playerHand = data.client_hand.join(", ");
+        const handSum = data.client_hand_sum;
+        clientHandDiv.textContent = `Your hand: ${playerHand}`;
+        handSumP.textContent = `Your hand sum: ${handSum}`;
+        messageP.textContent = data.message || "";
+        hitBtn.disabled = data.game_over;
+        standBtn.disabled = data.game_over;
+    }
+
+    function showResult(data) {
         resultDiv.innerHTML = `
-            <p>${gameState.feed}</p>
-            <p>${gameState.winner}</p>
-            <p>New amount of NFTs: ${gameState.nft_amount}</p>
+            <p>${data.feed}</p>
+            <p>${data.winner}</p>
+            <p>New amount of NFTs: ${data.nft_amount}</p>
         `;
         newGameBtn.style.display = 'block';
     }
