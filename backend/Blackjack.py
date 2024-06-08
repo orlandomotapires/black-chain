@@ -1,8 +1,6 @@
-from flask import Flask, request, jsonify
-from Player import *
+import xmlrpc.server
 import random
-
-app = Flask(__name__)
+from Player import *
 
 class BlackJack:
     def __init__(self):
@@ -49,6 +47,10 @@ class BlackJack:
         self.client_hand = []
         self.dealer_hand = self.start_dealer_hand()
 
+    def reset_game(self, player_id):
+        """Resets the game state for the given player ID."""
+        self.start_game(player_id)
+
     def get_message(self, hand_sum):
         for key in self.messages:
             if hand_sum in key:
@@ -62,7 +64,7 @@ class BlackJack:
         random_card = random.choice(self.dig_cards)
         self.dig_cards.remove(random_card)
         self.client_hand.append(random_card)
-        return {'client_hand': self.client_hand}
+        return self.client_hand
 
     def stand(self):
         return self.define_winner()
@@ -100,72 +102,41 @@ class BlackJack:
         client_hand_sum = self.client_hand_sum()
 
         if dealer_hand_sum > 21 and client_hand_sum <= 21:
-            return {"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
+            return 1
         elif dealer_hand_sum <= 21 and (dealer_hand_sum > client_hand_sum or client_hand_sum > 21):
-            return {"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": self.player.nft_amount - 1}
+            return -1
         elif dealer_hand_sum == client_hand_sum:
-            return {"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": self.player.nft_amount}
+            return 0
         else:
-            return {"feed": "Your hand is stronger, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
-    
+            return 1
+
     def get_feed(self):
-        feed_string = ""
-        feed_string += "Your final hand: {}\n".format(self.client_hand)
-        feed_string += "Your final hand sum: {}\n".format(self.client_hand_sum())
-        feed_string += "My final hand: {}\n".format(self.dealer_hand)
-        feed_string += "My final hand sum: {}\n".format(self.dealer_hand_sum())
-        return feed_string
-    
+        feed_object = {
+            "player_final_hand": self.client_hand,
+            "player_final_hand_sum": self.client_hand_sum(),
+            "dealer_final_hand": self.dealer_hand,
+            "dealer_final_hand_sum": self.dealer_hand_sum()
+        }
+
+        return feed_object
+
     def get_winner(self):
         result = self.define_winner()
         if result == 1:
             Player.get_update_nft_coins(self.player.player_id, 1)
-            return "You won!"
+            return {"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
         elif result == 0:
             Player.get_update_nft_coins(self.player.player_id, 0)
-            return "Draw!"
+            return {"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": self.player.nft_amount}
         elif result == -1:
             Player.get_update_nft_coins(self.player.player_id, -1)
-            return "I won!"
-    
+            return {"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": self.player.nft_amount - 1}
+
     def show_nft_amount(self):
         player = Player.get_player_by_id(self.player.player_id)
         return f"New amount of NFTs:  {player.nft_amount}"
 
-blackjack = BlackJack()
-
-@app.route("/start_game", methods=["POST"])
-def start_game():
-    data = request.get_json()
-    player_id = data.get("player_id")
-    blackjack.start_game(player_id)
-    return jsonify(success=True)
-
-@app.route("/client_throw_card", methods=["POST"])
-def client_throw_card():
-    response = blackjack.client_throw_card()
-    return jsonify(response)
-
-@app.route("/stand", methods=["POST"])
-def stand():
-    response = blackjack.stand()
-    return jsonify(response)
-
-@app.route("/get_feed", methods=["GET"])
-def get_feed():
-    response = blackjack.get_feed()
-    return jsonify(feed=response)
-
-@app.route("/get_winner", methods=["GET"])
-def get_winner():
-    response = blackjack.get_winner()
-    return jsonify(winner=response)
-
-@app.route("/show_nft_amount", methods=["GET"])
-def show_nft_amount():
-    response = blackjack.show_nft_amount()
-    return jsonify(nft_amount=response)
-
-if __name__ == "__main__":
-    print("Let the game begin!")
-    app.run(debug=True, port=8000)
+server = xmlrpc.server.SimpleXMLRPCServer(("localhost", 8000), allow_none=True)
+server.register_instance(BlackJack())
+print("Server is listening on port 8000...")
+server.serve_forever()

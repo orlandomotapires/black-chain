@@ -49,8 +49,7 @@ while True:
         print("\n")
 
     os.system('clear')
-    print(BlackJack.get_feed())
-    print(BlackJack.get_winner())
+    print(BlackJack.get_winner()['feed'])
     print(BlackJack.show_nft_amount())
 
     new_game = input("Do you want to play again? (yes/no): ")

@@ -1,4 +1,5 @@
 import json
+players_txt = "./backend/players.txt"
 
 class Player:
     def __init__(self, player_name, player_age, player_id, nft_amount):
@@ -10,7 +11,7 @@ class Player:
 
     @staticmethod
     def get_player_by_id(player_id):
-        with open('players.txt', 'r') as file:
+        with open(players_txt, 'r') as file:
             for linha in file:
                 try:
                     player = json.loads(linha.strip())
@@ -29,7 +30,7 @@ class Player:
         players = []
         player_found = False
 
-        with open('players.txt', 'r') as file:
+        with open(players_txt, 'r') as file:
             for linha in file:
                 try:
                     player = json.loads(linha.strip())
@@ -41,7 +42,7 @@ class Player:
                     print(f"Error decoding JSON: {e}")
 
         if player_found:
-            with open('players.txt', 'w') as file:
+            with open(players_txt, 'w') as file:
                 for player in players:
                     file.write(json.dumps(player) + '\n')
         else:
