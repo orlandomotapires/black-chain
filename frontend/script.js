@@ -38,8 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const gameState = await hit();
         updateGameState(gameState);
         if (gameState.player_hand_sum >= 21){
-            const gameState = await stand();
-            showResult(gameState);
+            const final_feed = await stand();
+            const final_result = await update_nft_amount();
+            console.log("New nft amount:", final_result);
+            show_game_result(final_result);
+            //show_final_feed(final_feed);
         }
     });
 
@@ -47,16 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Stand button clicked"); // Debug log
         const gameState = await stand();
         console.log("Stand response:", gameState); // Debug log
-        showResult(gameState);
+        const final_result = await update_nft_amount();
+        show_game_result(final_result);
     });
 
     newGameBtn.addEventListener('click', async () => {
-        gameAreaDiv.style.display = 'none';
-        playerInfoDiv.style.display = 'block';
-        resultDiv.innerHTML = '';
-    
         try {
-            await resetGame(playerId);
+            resetGame(playerId);
+            // Recarrega a página para reiniciar o jogo
+            window.location.reload();
         } catch (error) {
             console.error('Error resetting game:', error);
         }
@@ -148,9 +150,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            const gameState = await response.json();
+            updateGameState(gameState);
+            console.log(gameState)
             console.log('Game reset successfully');
         } catch (error) {
             throw new Error('Error resetting game:', error);
+        }
+    }
+
+    async function update_nft_amount() {
+        try {
+            const response = await fetch(`${serverUrl}/update_nft_amount`, {
+                method: 'PUT',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const new_nft_amount = await response.json();
+            return new_nft_amount;
+        } catch (error) {
+            console.error('Error updating nft amount:', error);
+            return null;
         }
     }
 
@@ -158,12 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data) {
             const player_hand = data.player_hand;
             const player_hand_sum = data.player_hand_sum;
+            const message = data.dealer_message;
 
             console.log(player_hand)
+            console.log(data)
 
             clientHandDiv.textContent = `Your hand: ${player_hand}`;
             handSumP.textContent = `Your hand sum: ${player_hand_sum}`;
-            messageP.textContent = data.message || "";
+            messageP.textContent = message || "";
 
             if (player_hand_sum >= 21){
                 stop_game()
@@ -171,13 +193,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function showResult(data) {
+    function show_game_result(result) {
 
-        const player_hand = data.player_final_hand;
-        const player_hand_sum = data.player_final_hand_sum;
+        const feed = result.feed;
+        const new_nft_amount = result.nft_amount;
+        const winner = result.winner;
 
-        const dealer_hand = data.dealer_final_hand;
-        const dealer_hand_sum = data.dealer_final_hand_sum;
+        resultDiv.innerHTML = `
+            ${feed} <br><br>
+            New nft amount: ${new_nft_amount} <br><br>
+            ${winner}  
+        `
+        stop_game()
+    }
+
+    function show_final_feed(final_feed) {
+
+        const player_hand = final_feed.player_final_hand;
+        const player_hand_sum = final_feed.player_final_hand_sum;
+
+        const dealer_hand = final_feed.dealer_final_hand;
+        const dealer_hand_sum = final_feed.dealer_final_hand_sum;
 
         resultDiv.innerHTML = `
             Your final hand sum: ${player_hand_sum} <br>
@@ -192,6 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function stop_game(){
         hitBtn.disabled = 1;
         standBtn.disabled = 1;
-        newGameBtn.style.display = 'block';    
+        newGameBtn.style.display = 'block';
     }
 });
