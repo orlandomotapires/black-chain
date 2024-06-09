@@ -1,1 +1,0 @@
-{'feed': "Dealer's hand is stronger, you lost!", 'winner': 'Dealer won!', 'nft_amount': 63}
