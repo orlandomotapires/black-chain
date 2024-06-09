@@ -16,15 +16,9 @@ def index():
 @blackjack_bp.route("/get_player_by_id", methods=["POST"])
 def get_player_by_id():
     data = request.get_json()
-    player_id = data["player_id"]
-    player = Player.get_player_by_id(int(player_id))
-    player_return = {
-        'player_id': player.player_id,
-        'player_name': player.player_name,
-        'player_age': player.player_age,
-        'nft_amount': player.nft_amount,
-    }
-    return jsonify(player_return)
+    player_id = int(data["player_id"])
+    player = Player.get_player_by_id(player_id)
+    return jsonify(player)
 
 @blackjack_bp.route("/start_game", methods=["POST"])
 def start_game():
@@ -37,9 +31,11 @@ def start_game():
 def client_throw_card():
     client_hand = BlackJack.client_throw_card()
     client_hand_sum = BlackJack.client_hand_sum()  # Get the hand sum from the server
+    dealer_message = BlackJack.get_message(client_hand_sum)
     result = {
         'player_hand_sum': client_hand_sum,
-        'player_hand': client_hand
+        'player_hand': client_hand,
+        'dealer_message': dealer_message
     }
     return jsonify(result)
 
@@ -52,5 +48,11 @@ def stand():
 def reset_game():
     data = request.get_json()
     player_id = data["player_id"]
-    BlackJack.reset_game(int(player_id))
-    return jsonify({"status": "game reset"})
+    result = BlackJack.start_game(int(player_id))
+    return jsonify(result)
+
+@blackjack_bp.route("/update_nft_amount", methods=["PUT"])
+def update_nft_amount():
+    result = BlackJack.get_winner()
+    print(result)
+    return jsonify(result)

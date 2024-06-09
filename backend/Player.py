@@ -1,5 +1,6 @@
 import json
-players_txt = "./backend/players.txt"
+
+players_json = "./players.json"
 
 class Player:
     def __init__(self, player_name, player_age, player_id, nft_amount):
@@ -11,14 +12,11 @@ class Player:
 
     @staticmethod
     def get_player_by_id(player_id):
-        with open(players_txt, 'r') as file:
-            for linha in file:
-                try:
-                    player = json.loads(linha.strip())
-                    if player["player_id"] == player_id:
-                        return Player(player["player_name"], player["player_age"], player["player_id"], player["nft_amount"])
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON: {e}")
+        with open(players_json, 'r') as file:
+            players = json.load(file)
+            for player in players:
+                if player["player_id"] == player_id:
+                    return player
         return None
 
     @staticmethod
@@ -27,24 +25,20 @@ class Player:
     
     @staticmethod
     def get_update_nft_coins(player_id, result):
-        players = []
-        player_found = False
-
-        with open(players_txt, 'r') as file:
-            for linha in file:
-                try:
-                    player = json.loads(linha.strip())
-                    if player["player_id"] == player_id:
-                        player["nft_amount"] += result * 3
-                        player_found = True
-                    players.append(player)
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON: {e}")
+        ntf_amount = 0
+        with open(players_json, 'r') as file:
+            players = json.load(file)
+            player_found = False
+            for player in players:
+                if player["player_id"] == player_id:
+                    player["nft_amount"] += result * 3
+                    ntf_amount = player["nft_amount"]
+                    player_found = True
 
         if player_found:
-            with open(players_txt, 'w') as file:
-                for player in players:
-                    file.write(json.dumps(player) + '\n')
+            with open(players_json, 'w') as file:
+                json.dump(players, file, indent=4)
+            return ntf_amount   
         else:
             print(f"Player with ID {player_id} not found.")
 

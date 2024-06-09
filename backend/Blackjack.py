@@ -1,6 +1,6 @@
-import xmlrpc.server
 import random
-from Player import *
+from Player import Player
+import xmlrpc.server
 
 class BlackJack:
     def __init__(self):
@@ -122,21 +122,26 @@ class BlackJack:
 
     def get_winner(self):
         result = self.define_winner()
+        player_id = self.player['player_id']
+        nft_amount = Player.get_update_nft_coins(player_id, result)
+
         if result == 1:
-            Player.get_update_nft_coins(self.player.player_id, 1)
-            return {"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": self.player.nft_amount + 1}
+            print({"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": nft_amount})
+            return {"feed": "Dealer busted, you won!", "winner": "You won!", "nft_amount": nft_amount}
         elif result == 0:
-            Player.get_update_nft_coins(self.player.player_id, 0)
-            return {"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": self.player.nft_amount}
+            print({"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": nft_amount})
+            return {"feed": "It's a tie!", "winner": "It's a tie!", "nft_amount": nft_amount}
         elif result == -1:
-            Player.get_update_nft_coins(self.player.player_id, -1)
-            return {"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": self.player.nft_amount - 1}
+            print({"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": nft_amount})
+            return {"feed": "Dealer's hand is stronger, you lost!", "winner": "Dealer won!", "nft_amount": nft_amount}
+
 
     def show_nft_amount(self):
         player = Player.get_player_by_id(self.player.player_id)
         return f"New amount of NFTs:  {player.nft_amount}"
 
 server = xmlrpc.server.SimpleXMLRPCServer(("localhost", 8000), allow_none=True)
-server.register_instance(BlackJack())
+game_instance = BlackJack()
+server.register_instance(game_instance)
 print("Server is listening on port 8000...")
 server.serve_forever()
