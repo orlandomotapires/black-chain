@@ -1,96 +1,94 @@
-# BlackJack Game
+# Blackjack Game
 
-Este é um jogo de BlackJack simples desenvolvido usando Flask no backend e JavaScript no frontend. O jogo permite que os jogadores joguem BlackJack e gerenciem seus NFTs.
+This is a simple Blackjack game developed using Flask on the backend and JavaScript on the frontend. The game allows players to play Blackjack and manage their NFTs.
 
-## Estrutura do Projeto
+## Project Structure
 
 - `backend/`
-  - `Player.py`: Definição da classe `Player` para gerenciar os jogadores.
-  - `blackjack.py`: Implementação do servidor XML-RPC que gerencia a lógica do jogo.
-  - `client.py`: Cliente que consome o blackjack de maneira local no terminal para testes
+  - `Player.py`: Defines the `Player` class to manage players.
+  - `blackjack.py`: Implements the XML-RPC server that manages the game logic.
 
 - `frontend/`
-  - `index.html`: Arquivo HTML principal.
-  - `styles.css`: Arquivo CSS para estilizar a interface do jogo.
-  - `script.js`: Arquivo JavaScript para a lógica do frontend.
+  - `index.html`: Main HTML file.
+  - `styles.css`: CSS file to style the game interface.
+  - `script.js`: JavaScript file for frontend logic.
 
-- `app.py`: Arquivo principal do Flask para iniciar o servidor web.
+- `app.py`: Main Flask file to start the web server.
 
-## Configuração e Execução
+## Setup and Execution
 
-### Requisitos
+### Requirements
 
 - Python 3.8+
 - Flask
 - Flask-CORS
 
-### Instalação
+### Installation
 
-1. Clone o repositório:
+1. Clone the repository:
 
    ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/orlandomotapires/black-chain.git
    ```
 
-2. Crie um ambiente virtual e ative-o:
+2. Create and activate a virtual environment within the cloned repository:
 
    ```sh
    python -m venv venv
-   source venv/bin/activate  # No Windows use `venv\Scripts\activate`
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 
-3. Instale as dependências:
+3. Install the dependencies:
 
    ```sh
    pip install -r requirements.txt
    ```
 
-### Execução do Servidor
+### Server Execution
 
-1. Inicie o servidor XML-RPC:
-
-   ```sh
-   python backend/blackjack_server.py
-   ```
-
-2. Em outro terminal, inicie o servidor Flask:
+1. Start the XML-RPC server on one terminal:
 
    ```sh
-   python app.py
+   bash up_backend.sh
    ```
 
-3. Abra o navegador e vá para `http://localhost:5000` para acessar o jogo.
+2. In another terminal, start the Flask server:
 
-## Funcionalidades
+   ```sh
+   bash up_frontend.sh
+   ```
 
-- Iniciar o jogo com um ID de jogador.
-- Visualizar detalhes do jogador.
-- Jogar BlackJack (HIT e STAND).
-- Verificar o resultado do jogo.
-- Resetar o jogo para uma nova partida.
+3. Open a web browser and access `http://localhost:5000` to play the game.
 
-## Rotas da API
+## Features
 
-- `GET /`: Rota principal para carregar a página do jogo.
-- `POST /get_player_by_id`: Obtém detalhes do jogador por ID.
-- `POST /start_game`: Inicia um novo jogo para o jogador.
-- `GET /client_throw_card`: Adiciona uma carta à mão do jogador.
-- `GET /stand`: Finaliza o turno do jogador e calcula o resultado.
-- `POST /reset_game`: Reseta o jogo para o jogador.
+- Start the game with a player ID.
+- View player details.
+- Play Blackjack (HIT and STAND).
+- Check the game result.
+- Reset the game for a new round.
 
-## Contribuição
+## API Routes
 
-Sinta-se à vontade para contribuir com melhorias ou correções. Para contribuir:
+- `GET /`: Main route to load the game page.
+- `POST /get_player_by_id`: Get player details by ID.
+- `POST /start_game`: Start a new game for the player.
+- `GET /client_throw_card`: Add a card to the player's hand.
+- `GET /stand`: Finish the player's turn and calculate the result.
+- `POST /reset_game`: Reset the game for the player.
 
-1. Fork o repositório.
-2. Crie uma branch para sua feature (`git checkout -b feature/sua-feature`).
-3. Commit suas alterações (`git commit -m 'Adiciona uma nova feature'`).
-4. Push para a branch (`git push origin feature/sua-feature`).
-5. Abra um Pull Request.
+## Contribution
 
-## Licença
+Feel free to contribute with improvements or fixes. To contribute:
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+1. Fork the repository.
+2. Create a branch for your feature (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add a new feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a Pull Request.
 
-Este `README.md` cobre a estrutura do projeto, instruções de instalação e execução, principais funcionalidades, rotas da API e informações sobre como contribuir. Ajuste conforme necessário para refletir melhor o seu projeto.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+This README.md covers the project structure, setup and execution instructions, main features, API routes, and contribution information. Adjust as needed to better reflect your project.

@@ -2,16 +2,16 @@ import xmlrpc.client
 import os
 from Player import Player
 
-# Conecta-se ao servidor RPC
+# Connects to the RPC server
 BlackJack = xmlrpc.client.ServerProxy("http://localhost:8000")
 
-# Solicita o ID do jogador
+# Requests the player ID
 player_id = input("Welcome Stranger! Your Identification, please ")
 
 while True:
     os.system('clear')
     
-    # Obtém e exibe os dados do jogador
+    # Gets and displays player data
     player = Player.get_player_by_id(int(player_id))
     if player:
         print("Some information I have about you")
@@ -20,7 +20,7 @@ while True:
         print(f"Player with ID {player_id} not found.")
         continue
     
-    # Inicia o jogo com o player_id
+    # Starts the game with the player_id
     try:
         BlackJack.start_game(int(player_id))
     except ValueError as e:

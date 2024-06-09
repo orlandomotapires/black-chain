@@ -24,7 +24,7 @@ class Player:
         return Player("Player_test", 57, 12, 96.76)
     
     @staticmethod
-    def get_update_nft_coins(player_id, result):
+    def update_nft_coins(player_id, result):
         ntf_amount = 0
         with open(players_json, 'r') as file:
             players = json.load(file)

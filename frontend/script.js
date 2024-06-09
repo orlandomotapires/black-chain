@@ -3,19 +3,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerId;
     let player;
 
-    const startGameBtn = document.getElementById('start-game-btn');
-    const hitBtn = document.getElementById('hit-btn');
-    const standBtn = document.getElementById('stand-btn');
-    const newGameBtn = document.getElementById('new-game-btn');
+    const startGameButton = document.getElementById('start-game-btn');
+    const hitButton = document.getElementById('hit-btn');
+    const standButton = document.getElementById('stand-btn');
+    const newGameButton = document.getElementById('new-game-btn');
     const playerInfoDiv = document.getElementById('player-info');
     const gameAreaDiv = document.getElementById('game-area');
     const playerDetailsDiv = document.getElementById('player-details');
     const clientHandDiv = document.getElementById('client-hand');
-    const handSumP = document.getElementById('hand-sum');
-    const messageP = document.getElementById('message');
+    const handSumParagraph = document.getElementById('hand-sum');
+    const messageParagraph = document.getElementById('message');
     const resultDiv = document.getElementById('result');
 
-    startGameBtn.addEventListener('click', async () => {
+    startGameButton.addEventListener('click', async () => {
         playerId = document.getElementById('player-id').value;
         console.log("Player ID entered:", playerId); // Debug log
         player = await fetchPlayerDetails(playerId);
@@ -34,30 +34,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    hitBtn.addEventListener('click', async () => {
+    hitButton.addEventListener('click', async () => {
         const gameState = await hit();
         updateGameState(gameState);
         if (gameState.player_hand_sum >= 21){
-            const final_feed = await stand();
-            const final_result = await update_nft_amount();
-            console.log("New nft amount:", final_result);
-            show_game_result(final_result);
-            //show_final_feed(final_feed);
+            const finalFeed = await stand();
+            const finalResult = await updateNFTAmount();
+            console.log("New NFT amount:", finalResult);
+            showGameResult(finalResult);
+            showFinalFeed(finalFeed);
         }
     });
 
-    standBtn.addEventListener('click', async () => {
+    standButton.addEventListener('click', async () => {
         console.log("Stand button clicked"); // Debug log
         const gameState = await stand();
         console.log("Stand response:", gameState); // Debug log
-        const final_result = await update_nft_amount();
-        show_game_result(final_result);
+        const finalResult = await updateNFTAmount();
+        showGameResult(finalResult);
     });
 
-    newGameBtn.addEventListener('click', async () => {
+    newGameButton.addEventListener('click', async () => {
         try {
             resetGame(playerId);
-            // Recarrega a página para reiniciar o jogo
+            // Reloads the page to restart the game
             window.location.reload();
         } catch (error) {
             console.error('Error resetting game:', error);
@@ -159,75 +159,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function update_nft_amount() {
+    async function updateNFTAmount() {
         try {
             const response = await fetch(`${serverUrl}/update_nft_amount`, {
                 method: 'PUT',
                 mode: 'cors',
                 headers: { 'Content-Type': 'application/json' }
             });
-            const new_nft_amount = await response.json();
-            return new_nft_amount;
+            const newNFTAmount = await response.json();
+            return newNFTAmount;
         } catch (error) {
-            console.error('Error updating nft amount:', error);
+            console.error('Error updating NFT amount:', error);
             return null;
         }
     }
 
     function updateGameState(data) {
         if (data) {
-            const player_hand = data.player_hand;
-            const player_hand_sum = data.player_hand_sum;
+            const playerHand = data.player_hand;
+            const playerHandSum = data.player_hand_sum;
             const message = data.dealer_message;
 
-            console.log(player_hand)
+            console.log(playerHand)
             console.log(data)
 
-            clientHandDiv.textContent = `Your hand: ${player_hand}`;
-            handSumP.textContent = `Your hand sum: ${player_hand_sum}`;
-            messageP.textContent = message || "";
+            clientHandDiv.textContent = `Your hand: ${playerHand}`;
+            handSumParagraph.textContent = `Your hand sum: ${playerHandSum}`;
+            messageParagraph.textContent = message || "";
 
-            if (player_hand_sum >= 21){
-                stop_game()
+            if (playerHandSum >= 21){
+                stopGame()
             }
         }
     }
 
-    function show_game_result(result) {
+    function showGameResult(result) {
 
         const feed = result.feed;
-        const new_nft_amount = result.nft_amount;
+        const newNFTAmount = result.nft_amount;
         const winner = result.winner;
 
         resultDiv.innerHTML = `
             ${feed} <br><br>
-            New nft amount: ${new_nft_amount} <br><br>
+            New NFT amount: ${newNFTAmount} <br><br>
             ${winner}  
         `
-        stop_game()
+        stopGame()
     }
 
-    function show_final_feed(final_feed) {
+    function showFinalFeed(finalFeed) {
 
-        const player_hand = final_feed.player_final_hand;
-        const player_hand_sum = final_feed.player_final_hand_sum;
+        const playerHand = finalFeed.player_final_hand;
+        const playerHandSum = finalFeed.player_final_hand_sum;
 
-        const dealer_hand = final_feed.dealer_final_hand;
-        const dealer_hand_sum = final_feed.dealer_final_hand_sum;
+        const dealerHand = finalFeed.dealer_final_hand;
+        const dealerHandSum = finalFeed.dealer_final_hand_sum;
 
         resultDiv.innerHTML = `
-            Your final hand sum: ${player_hand_sum} <br>
-            Your final hand: <br> ${player_hand} <br><br>
+            Your final hand sum: ${playerHandSum} <br>
+            Your final hand: <br> ${playerHand} <br><br>
             
-            My final hand sum: ${dealer_hand_sum} <br>
-            My final hand: <br> ${dealer_hand}   
+            My final hand sum: ${dealerHandSum} <br>
+            My final hand: <br> ${dealerHand}   
         `
-        stop_game()
+        stopGame()
     }
 
-    function stop_game(){
-        hitBtn.disabled = 1;
-        standBtn.disabled = 1;
-        newGameBtn.style.display = 'block';
+    function stopGame(){
+        hitButton.disabled = 1;
+        standButton.disabled = 1;
+        newGameButton.style.display = 'block';
     }
 });

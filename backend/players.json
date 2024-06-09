@@ -3,7 +3,7 @@
         "player_name": "Joseph Taylor",
         "player_age": 51,
         "player_id": 0,
-        "nft_amount": 51
+        "nft_amount": 63
     },
     {
         "player_name": "Megan Miller",
@@ -33,7 +33,7 @@
         "player_name": "James Lopez",
         "player_age": 21,
         "player_id": 5,
-        "nft_amount": 93
+        "nft_amount": 96
     },
     {
         "player_name": "William Taylor",
@@ -75,7 +75,7 @@
         "player_name": "Joseph Wilson",
         "player_age": 65,
         "player_id": 12,
-        "nft_amount": 94
+        "nft_amount": 97
     },
     {
         "player_name": "William Johnson",
@@ -87,13 +87,13 @@
         "player_name": "Alex Garcia",
         "player_age": 65,
         "player_id": 14,
-        "nft_amount": 18
+        "nft_amount": 21
     },
     {
         "player_name": "James Martinez",
         "player_age": 26,
         "player_id": 15,
-        "nft_amount": 28
+        "nft_amount": 25
     },
     {
         "player_name": "Emily Hernandez",
@@ -153,7 +153,7 @@
         "player_name": "Laura Williams",
         "player_age": 53,
         "player_id": 25,
-        "nft_amount": 36
+        "nft_amount": 42
     },
     {
         "player_name": "Jane Smith",
@@ -909,7 +909,7 @@
         "player_name": "Robert Anderson",
         "player_age": 28,
         "player_id": 151,
-        "nft_amount": 28
+        "nft_amount": 31
     },
     {
         "player_name": "Anna Hernandez",
@@ -1509,7 +1509,7 @@
         "player_name": "Maria Wilson",
         "player_age": 49,
         "player_id": 251,
-        "nft_amount": 24
+        "nft_amount": 27
     },
     {
         "player_name": "Charles Thomas",
