@@ -303,7 +303,7 @@
         "player_name": "Joseph Davis",
         "player_age": 30,
         "player_id": 50,
-        "nft_amount": 39
+        "nft_amount": 42
     },
     {
         "player_name": "James Thomas",
@@ -459,7 +459,7 @@
         "player_name": "William Brown",
         "player_age": 21,
         "player_id": 76,
-        "nft_amount": 84
+        "nft_amount": 87
     },
     {
         "player_name": "William Jones",
@@ -549,7 +549,7 @@
         "player_name": "David Miller",
         "player_age": 61,
         "player_id": 91,
-        "nft_amount": 7
+        "nft_amount": 4
     },
     {
         "player_name": "David Garcia",
