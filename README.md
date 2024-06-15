@@ -52,7 +52,7 @@ This is a simple Blackjack game developed using Flask on the backend and JavaScr
    bash up_backend.sh
    ```
 
-2. In another terminal, start the Flask server:
+2. In another terminal with venv environment activated, start the Flask server:
 
    ```sh
    bash up_frontend.sh
