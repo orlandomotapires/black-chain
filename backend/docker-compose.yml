@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+  api:
+    build: ../ # Changed to build from the project root to include app.py
+    depends_on:
+      - db
+    ports:
+      - "${API_PORT}:5000" # Assuming Flask app runs on port 5000
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development
+    volumes:
+      - ../:/app # Mount the project root to /app in the container
+    working_dir: /app # Set working directory to /app
+    command: flask run --host=0.0.0.0

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the backend directory
-cd ./backend
+cd backend
 
 # Start the Blackjack service in one terminal
-python3 ../app.py
+python3 app.py

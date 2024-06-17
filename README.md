@@ -5,10 +5,12 @@ This is a simple Blackjack game developed using Flask on the backend and JavaScr
 ## Project Structure
 
 - `backend/`
+
   - `Player.py`: Defines the `Player` class to manage players.
   - `blackjack.py`: Implements the XML-RPC server that manages the game logic.
 
 - `frontend/`
+
   - `index.html`: Main HTML file.
   - `styles.css`: CSS file to style the game interface.
   - `script.js`: JavaScript file for frontend logic.
@@ -31,18 +33,31 @@ This is a simple Blackjack game developed using Flask on the backend and JavaScr
    git clone https://github.com/orlandomotapires/black-chain.git
    ```
 
-2. Create and activate a virtual environment within the cloned repository:
+2. Go to backend directory using the command.
 
-   ```sh
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   ```
+`````sh
+cd backend
+
+````
+
+Then create and activate a virtual environment within the cloned repository:
+
+```sh
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+`````
 
 3. Install the dependencies:
 
    ```sh
    pip install -r requirements.txt
    ```
+
+   use the cd command to go back to the root directory
+
+```cd ..
+
+```
 
 ### Server Execution
 
