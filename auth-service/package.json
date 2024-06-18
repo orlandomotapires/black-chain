@@ -1,0 +1,19 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
+  },
+  "packageManager": "yarn@4.0.0-rc.39+sha512.963e4feaff346599df8ed9bed7af80f3ef39012eba6586ae112e27d82eed264732abb3fcc00883415bd237eba7dcc901ca42687312e76fef96d8a4018424522b"
+}

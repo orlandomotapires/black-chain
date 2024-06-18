@@ -1,3 +1,9 @@
+-- Cria o usuário e a base de dados se eles ainda não existirem
+CREATE DATABASE blackchain;
+GRANT ALL PRIVILEGES ON DATABASE blackchain TO postgres;
+
+-- Conecta-se à base de dados criada
+\connect blackchain;
 CREATE TABLE IF NOT EXISTS player (
     player_id SERIAL PRIMARY KEY,
     player_name VARCHAR(255),

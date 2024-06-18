@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: pg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: blackchain
+    ports:
+      - "5436:5436"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    build: .
+    container_name: auth-service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
