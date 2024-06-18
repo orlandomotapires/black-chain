@@ -1,6 +1,7 @@
 const express = require("express");
 const { Sequelize, DataTypes } = require("sequelize");
 const bodyParser = require("body-parser");
+const cors = require("cors"); // Importa o pacote cors
 
 // Configurações de conexão com o banco de dados
 let password = "123";
@@ -42,13 +43,13 @@ const Player = sequelize.define(
 const app = express();
 const PORT = 8001;
 
+app.use(cors()); // Habilita o CORS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rota de login
 app.post("/login", async (req, res) => {
 	const { player_id } = req.body;
-	player_id = parseInt(player_id);
 	try {
 		const player = await Player.findByPk(player_id);
 		if (player) {

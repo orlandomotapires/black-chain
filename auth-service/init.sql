@@ -1,9 +1,20 @@
--- Cria o usuário e a base de dados se eles ainda não existirem
-CREATE DATABASE blackchain;
+BEGIN;
+
+-- Verifica se o banco de dados existe e, se não, cria-o
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'blackchain') THEN
+        EXECUTE 'CREATE DATABASE blackchain';
+    END IF;
+END $$;
+
+-- Concede todos os privilégios no banco de dados ao usuário postgres
 GRANT ALL PRIVILEGES ON DATABASE blackchain TO postgres;
 
--- Conecta-se à base de dados criada
-\connect blackchain;
+-- Conecta-se ao banco de dados
+\c blackchain;
+
+-- Cria a tabela se ela não existir
 CREATE TABLE IF NOT EXISTS player (
     player_id SERIAL PRIMARY KEY,
     player_name VARCHAR(255),
@@ -11,6 +22,7 @@ CREATE TABLE IF NOT EXISTS player (
     password VARCHAR(255) NOT NULL DEFAULT '123',
     player_age INT
 );
+
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (0, 'Joseph Taylor', 51, 63);
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (1, 'Megan Miller', 69, 64);
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (2, 'Maria Garcia', 45, 44);
@@ -1011,3 +1023,4 @@ INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (996,
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (997, 'Daniel Thomas', 62, 91);
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (998, 'Charles Miller', 67, 62);
 INSERT INTO player (player_id, player_name, player_age, nft_amount) VALUES (999, 'Emily Martinez', 33, 61);
+COMMIT;

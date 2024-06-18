@@ -4,4 +4,4 @@
 cd backend
 
 # Start the Blackjack service in one terminal
-python3 app.py
+python3 routes.py

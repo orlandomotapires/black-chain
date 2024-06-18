@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import useCurrentUser from '../stores/useCurrentUser';
 
 function BlackjackGame() {
@@ -7,63 +8,80 @@ function BlackjackGame() {
   const [handSum, setHandSum] = useState(0);
   const [message, setMessage] = useState('');
   const [gameResult, setGameResult] = useState(null);
-  const [newGameVisible, setNewGameVisible] = useState(false);
-  const playerId = useCurrentUser((state) => state.playerId);
-
-  const handleStartGame = () => {
-    setGameAreaVisible(true);
-    setClientHand([]);
-    setHandSum(0);
-    setMessage('');
-    setGameResult(null);
-    setNewGameVisible(false);
-  };
+  const playerId = useCurrentUser((state) => state.player.player_id);
 
   useEffect(() => {
     if (playerId) {
-      handleStartGame();
+      handleStartGame(playerId); // Automatically start the game with playerId
     }
   }, [playerId]);
 
-  const handleHit = () => {
-    const newCard = Math.floor(Math.random() * 11) + 1;
-    const newHand = [...clientHand, newCard];
-    setClientHand(newHand);
-    const newSum = newHand.reduce((a, b) => a + b, 0);
-    setHandSum(newSum);
-
-    if (newSum > 21) {
-      setMessage('Bust! You lose.');
-      setGameResult('Loss');
-      setNewGameVisible(true);
+  const handleStartGame = async (playerId) => {
+    try {
+      const response = await axios.post('http://localhost:5000/start_game',
+        { player_id: playerId },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',  // Add CORS header
+          },
+        }
+      );
+      setGameAreaVisible(true);
+      setClientHand(response.data.player_hand);
+      setHandSum(response.data.player_hand_sum);
+      setMessage(response.data.dealer_message);
+      setGameResult(null);
+    } catch (error) {
+      console.error('Error starting the game:', error);
     }
   };
 
-  const handleStand = () => {
-    const dealerHand = Math.floor(Math.random() * 11) + 15;
-    if (handSum > dealerHand) {
-      setMessage('You win!');
-      setGameResult('Win');
-    } else {
-      setMessage('You lose.');
-      setGameResult('Loss');
+  const handleHit = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/client_throw_card', {
+        headers: {
+          'Access-Control-Allow-Origin': '*',  // Add CORS header
+        },
+      });
+      setClientHand(response.data.player_hand);
+      setHandSum(response.data.player_hand_sum);
+      setMessage(response.data.dealer_message);
+
+      if (response.data.player_hand_sum > 21) {
+        setGameResult('Loss');
+      }
+    } catch (error) {
+      console.error('Error hitting:', error);
     }
-    setNewGameVisible(true);
+  };
+
+  const handleStand = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/stand', {
+        headers: {
+          'Access-Control-Allow-Origin': '*',  // Add CORS header
+        },
+      });
+      setGameResult(response.data.feed);
+      setMessage(response.data.winner);
+    } catch (error) {
+      console.error('Error standing:', error);
+    }
   };
 
   const handleNewGame = () => {
     setGameAreaVisible(false);
+    setClientHand([]);
+    setHandSum(0);
+    setMessage('');
+    setGameResult(null);
   };
 
   return (
     <div className="container">
       <h1>Welcome to Blackjack</h1>
-      {!gameAreaVisible && (
-        <div id="player-info">
-          <p>Enter your Player ID to start the game.</p>
-        </div>
-      )}
-      {gameAreaVisible && (
+      {gameAreaVisible ? (
         <div id="game-area">
           <div id="player-details">
             <p>Player: {playerId}</p>
@@ -86,12 +104,18 @@ function BlackjackGame() {
               STAND
             </button>
           </div>
-          <div id="result">{gameResult && <p>Result: {gameResult}</p>}</div>
-          {newGameVisible && (
-            <button onClick={handleNewGame} id="new-game-btn">
-              New Game
-            </button>
+          {gameResult && (
+            <div id="result">
+              <p>Result: {gameResult}</p>
+              <button onClick={handleNewGame} id="new-game-btn">
+                New Game
+              </button>
+            </div>
           )}
+        </div>
+      ) : (
+        <div id="player-info">
+          <p>Starting game...</p>
         </div>
       )}
     </div>

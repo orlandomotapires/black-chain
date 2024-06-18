@@ -5,7 +5,7 @@ import useCurrentUser from '../stores/useCurrentUser';
 
 function Login() {
   const [playerIdInput, setPlayerIdInput] = useState('');
-  const setPlayerId = useCurrentUser((state) => state.setPlayerId);
+  const setPlayer = useCurrentUser(state => state.setPlayer);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -14,7 +14,7 @@ function Login() {
       const response = await axios.post('http://localhost:8001/login', { player_id: playerIdInput });
       if (response.status === 200) {
         console.log('Login successful:', response.data);
-        setPlayerId(playerIdInput);
+        setPlayer(response.data); // Define todas as informações do jogador no Zustand
         navigate('/home');
       }
     } catch (error) {
