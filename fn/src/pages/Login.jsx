@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useCurrentUser from '../stores/useCurrentUser';
+import './Login.css'; // Import CSS
 
 function Login() {
   const [playerIdInput, setPlayerIdInput] = useState('');
@@ -15,6 +16,7 @@ function Login() {
       if (response.status === 200) {
         console.log('Login successful:', response.data);
         setPlayer(response.data); // Define todas as informações do jogador no Zustand
+        console.log('PLAYER DENTRO DO LOGIN', response.data)
         navigate('/home');
       }
     } catch (error) {
@@ -23,10 +25,10 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login Page</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="playerId">Player ID:</label>
           <input
             type="text"

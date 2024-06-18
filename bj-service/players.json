@@ -75,7 +75,7 @@
         "player_name": "Joseph Wilson",
         "player_age": 65,
         "player_id": 12,
-        "nft_amount": 97
+        "nft_amount": 100
     },
     {
         "player_name": "William Johnson",
@@ -195,7 +195,7 @@
         "player_name": "John Rodriguez",
         "player_age": 67,
         "player_id": 32,
-        "nft_amount": 25
+        "nft_amount": 28
     },
     {
         "player_name": "Megan Wilson",
