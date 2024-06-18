@@ -2,6 +2,12 @@
 
 This is a simple Blackjack game developed using Flask on the backend and JavaScript on the frontend. The game allows players to play Blackjack and manage their NFTs.
 
+The game begins with the player receiving two cards from a standard 52-card deck. The Dealer (House) also receives two cards, but only one of the Dealer's cards is visible to the player. The round starts with the player having a total score based on the sum of their two cards, where the value of each card is equal to its number, face cards (King, Queen, Jack) are worth 10 points, and the Ace can be worth either 1 or 11 points.
+
+The objective of the game is to beat the Dealer by drawing cards and increasing your score as close to 21 as possible without exceeding it. If the player exceeds 21 points, they automatically lose, and the same rule applies to the Dealer. After the player decides to stop drawing cards or busts (exceeds 21), it is the Dealer's turn. The Dealer will draw cards until they reach 21 or as close to it as possible without busting.
+
+If the Dealer busts or stops drawing with a total that is lower than the player's total (but not exceeding 21), the player wins. Conversely, if the Dealer's total is closer to 21 than the player's, the Dealer wins. In either case, the hand is then reset for the next round.
+
 ## Project Structure
 
 - `backend/`
