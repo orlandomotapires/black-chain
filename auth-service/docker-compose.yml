@@ -21,5 +21,13 @@ services:
     depends_on:
       - postgres
 
+  bj-service:
+    build: ../bj-service
+    container_name: bj-service
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres
+
 volumes:
   postgres-data:
